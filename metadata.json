@@ -1,0 +1,6 @@
+{
+  "name": "Creator Hub",
+  "description": "Escale suas vendas no TikTok Shop com a plataforma Creator Hub.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
