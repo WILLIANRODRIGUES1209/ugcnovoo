@@ -1,6 +1,6 @@
 import { useState, useEffect, MouseEvent } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, Check, ChevronDown, Menu, ArrowRight, Store, Users, Play, Workflow, Clapperboard, Video, X } from 'lucide-react';
+import { Sparkles, Check, ChevronDown, Menu, ArrowRight, Store, Users, Play, Workflow, Clapperboard, Video, X, Clock } from 'lucide-react';
 
 const DEFAULT_PLAN = {
   mensalPrice: "245,00",
@@ -10,6 +10,17 @@ const DEFAULT_PLAN = {
 };
 
 const COUPONS = {
+  "AGORA40": {
+    mensalOriginal: "245,00",
+    mensalPrice: "145,00",
+    mensalLink: "https://checkout.applyfy.com.br/checkout/cmrjfn9730jr901olwnzyqr8p?offer=K6IXWWQ",
+    vitalicioOriginal: "497,00",
+    vitalicioInstallments: "12x 20,99",
+    vitalicioCash: "197,00",
+    vitalicioLink: "https://checkout.applyfy.com.br/checkout/cmrjfn9730jr901olwnzyqr8p?offer=OO947ZE",
+    discountText: "- PROMOÇÃO ATIVADA",
+    badgeText: "+ KIT VIRAL PREMIUM DESBLOQUEADO",
+  },
   "CREATOR40": {
     mensalOriginal: "245,00",
     mensalPrice: "167,00",
@@ -30,7 +41,7 @@ const COUPONS = {
     vitalicioCash: "197,00",
     vitalicioLink: "https://checkout.applyfy.com.br/checkout/cmrjfn9730jr901olwnzyqr8p?offer=OO947ZE",
     discountText: "- PROMOÇÃO ATIVADA",
-    badgeText: "+ BIBLIOTECA DE PROMPTS DESBLOQUEADA",
+    badgeText: "+ KIT VIRAL PREMIUM DESBLOQUEADO",
   }
 };
 
@@ -146,6 +157,8 @@ export default function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [couponInput, setCouponInput] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
+  const [appliedCouponCode, setAppliedCouponCode] = useState<string>('');
+  const [timeLeft, setTimeLeft] = useState<number>(355); // 05:55 countdown exactly like screenshot
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   useEffect(() => {
@@ -156,10 +169,26 @@ export default function App() {
       const code = cupomParam.toUpperCase();
       if ((COUPONS as any)[code]) {
         setAppliedCoupon((COUPONS as any)[code]);
+        setAppliedCouponCode(code);
         setCouponInput(code);
+        setTimeLeft(355);
       }
     }
   }, []);
+
+  useEffect(() => {
+    if (!appliedCoupon) return;
+    const interval = setInterval(() => {
+      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [appliedCoupon]);
+
+  const formatCountdown = (totalSeconds: number) => {
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    return `${String(mins).padStart(2, '0')} : ${String(secs).padStart(2, '0')}`;
+  };
 
   const activeFeature = FEATURES.find(f => f.id === activeFeatureId) || FEATURES[0];
 
@@ -179,8 +208,10 @@ export default function App() {
 
   const handleApplyCoupon = () => {
     const code = couponInput.toUpperCase().trim();
-    if (COUPONS[code]) {
-      setAppliedCoupon(COUPONS[code]);
+    if ((COUPONS as any)[code]) {
+      setAppliedCoupon((COUPONS as any)[code]);
+      setAppliedCouponCode(code);
+      setTimeLeft(355);
     } else {
       alert('Cupom inválido ou expirado.');
     }
@@ -201,7 +232,44 @@ export default function App() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[#080A18]/50 blur-[120px] rounded-full" />
       </div>
       <div className="relative z-10">
-        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-5xl pointer-events-none">
+        <AnimatePresence>
+          {appliedCoupon && (
+            <motion.div
+              initial={{ y: -60, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -60, opacity: 0 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className="fixed top-0 inset-x-0 z-[60] bg-[#FF2D85] text-white shadow-xl"
+            >
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2 sm:py-2.5 flex flex-col md:flex-row items-center justify-between gap-2.5">
+                <div className="flex items-center gap-2 sm:gap-3 shrink-0 flex-wrap justify-center">
+                  <Clock className="w-4 h-4 text-white shrink-0" />
+                  <span className="text-white text-xs sm:text-sm font-semibold tracking-tight whitespace-nowrap">Seu cupom</span>
+                  <span className="bg-black/25 text-white font-bold px-2.5 py-0.5 rounded text-xs sm:text-sm tracking-wider uppercase whitespace-nowrap shadow-inner">
+                    {appliedCouponCode || 'AGORA40'}
+                  </span>
+                  <span className="text-white text-xs sm:text-sm font-semibold tracking-tight whitespace-nowrap">expira em</span>
+                  <span className="bg-white text-[#FF2D85] font-black px-2.5 py-0.5 rounded-md text-xs sm:text-sm tracking-widest shadow-sm font-mono whitespace-nowrap">
+                    {formatCountdown(timeLeft)}
+                  </span>
+                  <a
+                    href="#planos"
+                    onClick={(e) => scrollToSection(e, 'planos')}
+                    className="bg-black hover:bg-neutral-900 text-white font-black text-[10px] sm:text-[11px] px-3.5 sm:px-4 py-1.5 rounded-full flex items-center gap-1.5 transition-all uppercase tracking-wider shadow-md shrink-0 whitespace-nowrap"
+                  >
+                    ADQUIRIR AGORA →
+                  </a>
+                </div>
+                <div className="flex items-center gap-1.5 text-white text-[11px] sm:text-xs font-medium tracking-tight text-center md:text-right shrink-0">
+                  <span>🔥</span>
+                  <span>3 pessoas utilizando esse cupom agora. Adquira antes que o cupom esgote!</span>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div className={`fixed ${appliedCoupon ? 'top-20 md:top-14' : 'top-6'} left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-5xl pointer-events-none transition-all duration-300`}>
           <nav className={`relative transition-all duration-300 ${mobileMenuOpen ? 'rounded-3xl' : 'rounded-full'} border shadow-2xl overflow-hidden pointer-events-auto backdrop-blur-2xl bg-[#080A18]/90 border-white/10`}>
             <div className="px-6 h-12 sm:h-14 flex items-center justify-between relative z-10"><a href="#inicio" onClick={(e) => scrollToSection(e, 'inicio')} className="flex items-center gap-2"><img src="/assets/creator-hub-logo.png" alt="Creator Hub" width={24} height={24} className="h-6 w-auto" /><span className="font-medium text-white text-base tracking-tight hidden sm:inline-block font-sans">Creator Hub</span></a>
               <div className="hidden md:flex items-center gap-8"><a href="#solucoes" onClick={(e) => scrollToSection(e, 'solucoes')} className="text-sm font-medium text-[#94A3B8] hover:text-white transition-colors">Recursos</a><a href="#solucoes" onClick={(e) => scrollToSection(e, 'solucoes')} className="text-sm font-medium text-[#94A3B8] hover:text-white transition-colors">Galeria</a><a href="#como-funciona" onClick={(e) => scrollToSection(e, 'como-funciona')} className="text-sm font-medium text-[#94A3B8] hover:text-white transition-colors">Como funciona</a><a href="#planos" onClick={(e) => scrollToSection(e, 'planos')} className="text-sm font-medium text-[#94A3B8] hover:text-white transition-colors">Planos</a><a href="#faq" onClick={(e) => scrollToSection(e, 'faq')} className="text-sm font-medium text-[#94A3B8] hover:text-white transition-colors">FAQ</a></div>
