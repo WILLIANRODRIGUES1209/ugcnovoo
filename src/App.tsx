@@ -10,7 +10,7 @@ const DEFAULT_PLAN = {
 };
 
 const COUPONS = {
-  "MODERNOW": {
+  "CREATOR40": {
     mensalOriginal: "245,00",
     mensalPrice: "167,00",
     mensalLink: "https://checkout.applyfy.com.br/checkout/cmrmjhw9a0k3001pq2mwbr436?offer=4C8P2PM",
