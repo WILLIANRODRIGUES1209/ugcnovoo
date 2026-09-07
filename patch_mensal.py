@@ -44,7 +44,7 @@ new_coupons = """const COUPONS = {
     vitalicioCash: "197,00",
     vitalicioLink: "https://checkout.exemplo.com/vitalicio-promo",
     discountText: "- PROMOÇÃO ATIVADA",
-    badgeText: "+ KIT VIRAL PREMIUM DESBLOQUEADO",
+    badgeText: "+ BIBLIOTECA DE PROMPTS DESBLOQUEADA",
   }
 };
 
