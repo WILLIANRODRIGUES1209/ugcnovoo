@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
-import { Sparkles, Check, ChevronDown, Menu, ArrowRight, Store, Users, Play, Workflow, Clapperboard, Video } from 'lucide-react';
+import { useState, useEffect, MouseEvent } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Sparkles, Check, ChevronDown, Menu, ArrowRight, Store, Users, Play, Workflow, Clapperboard, Video, X } from 'lucide-react';
 
 const DEFAULT_PLAN = {
   mensalPrice: "245,00",
@@ -143,32 +143,35 @@ export default function App() {
     }
   ];
 
-  const activeFeature = FEATURES.find(f => f.id === activeFeatureId) || FEATURES[0];
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [couponInput, setCouponInput] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
-    e.preventDefault();
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-  // Extract URL parameters on mount
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const cupomParam = params.get('cupom');
     
     if (cupomParam) {
       const code = cupomParam.toUpperCase();
-      if (COUPONS[code]) {
-        setAppliedCoupon(COUPONS[code]);
+      if ((COUPONS as any)[code]) {
+        setAppliedCoupon((COUPONS as any)[code]);
         setCouponInput(code);
       }
     }
   }, []);
 
-  const [couponInput, setCouponInput] = useState('');
-    const [appliedCoupon, setAppliedCoupon] = useState(null);
-  const [openFaq, setOpenFaq] = useState(null);
+  const activeFeature = FEATURES.find(f => f.id === activeFeatureId) || FEATURES[0];
+
+  const scrollToSection = (e: MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    const targetId = (id === 'recursos' || id === 'galeria') ? 'solucoes' : id;
+    const element = document.getElementById(targetId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+    setMobileMenuOpen(false);
+  };
 
   const toggleFaq = (index) => {
     setOpenFaq(openFaq === index ? null : index);
@@ -199,17 +202,36 @@ export default function App() {
       </div>
       <div className="relative z-10">
         <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-5xl pointer-events-none">
-          <nav className="relative transition-all duration-500 rounded-full border shadow-2xl overflow-hidden pointer-events-auto backdrop-blur-2xl bg-white/[0.02] border-white/10">
+          <nav className={`relative transition-all duration-300 ${mobileMenuOpen ? 'rounded-3xl' : 'rounded-full'} border shadow-2xl overflow-hidden pointer-events-auto backdrop-blur-2xl bg-[#080A18]/90 border-white/10`}>
             <div className="px-6 h-12 sm:h-14 flex items-center justify-between relative z-10"><a href="#inicio" onClick={(e) => scrollToSection(e, 'inicio')} className="flex items-center gap-2"><img src="/assets/creator-hub-logo.png" alt="Creator Hub" width={24} height={24} className="h-6 w-auto" /><span className="font-medium text-white text-base tracking-tight hidden sm:inline-block font-sans">Creator Hub</span></a>
-              <div className="hidden md:flex items-center gap-8"><a href="#recursos" onClick={(e) => scrollToSection(e, 'recursos')} className="text-sm font-medium text-[#94A3B8] hover:text-white transition-colors">Recursos</a><a href="#galeria" onClick={(e) => scrollToSection(e, 'galeria')} className="text-sm font-medium text-[#94A3B8] hover:text-white transition-colors">Galeria</a><a href="#como-funciona" onClick={(e) => scrollToSection(e, 'como-funciona')} className="text-sm font-medium text-[#94A3B8] hover:text-white transition-colors">Como funciona</a><a href="#planos" onClick={(e) => scrollToSection(e, 'planos')} className="text-sm font-medium text-[#94A3B8] hover:text-white transition-colors">Planos</a><a href="#faq" onClick={(e) => scrollToSection(e, 'faq')} className="text-sm font-medium text-[#94A3B8] hover:text-white transition-colors">FAQ</a></div>
+              <div className="hidden md:flex items-center gap-8"><a href="#solucoes" onClick={(e) => scrollToSection(e, 'solucoes')} className="text-sm font-medium text-[#94A3B8] hover:text-white transition-colors">Recursos</a><a href="#solucoes" onClick={(e) => scrollToSection(e, 'solucoes')} className="text-sm font-medium text-[#94A3B8] hover:text-white transition-colors">Galeria</a><a href="#como-funciona" onClick={(e) => scrollToSection(e, 'como-funciona')} className="text-sm font-medium text-[#94A3B8] hover:text-white transition-colors">Como funciona</a><a href="#planos" onClick={(e) => scrollToSection(e, 'planos')} className="text-sm font-medium text-[#94A3B8] hover:text-white transition-colors">Planos</a><a href="#faq" onClick={(e) => scrollToSection(e, 'faq')} className="text-sm font-medium text-[#94A3B8] hover:text-white transition-colors">FAQ</a></div>
               <div className="hidden md:flex items-center gap-3"><a href="https://app.creattorhub.com.br/indique" className="px-5 py-2 rounded-full bg-white/5 border border-white/10 text-white text-[12px] font-bold hover:bg-white/10 transition-all uppercase tracking-wider">Entrar</a><a href="#planos" onClick={(e) => scrollToSection(e, 'planos')} className="px-5 py-2 rounded-full bg-[#FF2D85]/15 border border-[#FF2D85]/30 backdrop-blur-md text-white text-[12px] font-bold hover:bg-[#FF2D85]/25 transition-all hover:shadow-[0_0_15px_rgba(255,45,133,0.2)] uppercase tracking-wider relative overflow-hidden group">
                   <div className="absolute inset-0 bg-gradient-to-r from-[#FF2D85]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" /><span className="relative z-10">Assinar</span>
-                </a></div><button className="md:hidden w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white transition-all hover:bg-white/10" aria-label="Abrir menu"><svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-menu">
-                  <line x1={4} x2={20} y1={12} y2={12} />
-                  <line x1={4} x2={20} y1={6} y2={6} />
-                  <line x1={4} x2={20} y1={18} y2={18} />
-                </svg></button>
+                </a></div><button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white transition-all hover:bg-white/10" aria-label={mobileMenuOpen ? "Fechar menu" : "Abrir menu"}>
+                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
             </div>
+            <AnimatePresence>
+              {mobileMenuOpen && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="px-6 py-5 border-t border-white/10 flex flex-col gap-3 bg-[#0A0C1A]/95 backdrop-blur-3xl md:hidden"
+                >
+                  <a href="#solucoes" onClick={(e) => scrollToSection(e, 'solucoes')} className="text-sm font-medium text-[#94A3B8] hover:text-white transition-colors py-1">Recursos</a>
+                  <a href="#solucoes" onClick={(e) => scrollToSection(e, 'solucoes')} className="text-sm font-medium text-[#94A3B8] hover:text-white transition-colors py-1">Galeria</a>
+                  <a href="#como-funciona" onClick={(e) => scrollToSection(e, 'como-funciona')} className="text-sm font-medium text-[#94A3B8] hover:text-white transition-colors py-1">Como funciona</a>
+                  <a href="#planos" onClick={(e) => scrollToSection(e, 'planos')} className="text-sm font-medium text-[#94A3B8] hover:text-white transition-colors py-1">Planos</a>
+                  <a href="#faq" onClick={(e) => scrollToSection(e, 'faq')} className="text-sm font-medium text-[#94A3B8] hover:text-white transition-colors py-1">FAQ</a>
+                  <div className="pt-2 flex flex-col gap-2">
+                    <a href="https://app.creattorhub.com.br/indique" className="w-full py-2.5 rounded-full bg-white/5 border border-white/10 text-white text-center text-[12px] font-bold uppercase tracking-wider">Entrar</a>
+                    <a href="#planos" onClick={(e) => scrollToSection(e, 'planos')} className="w-full py-2.5 rounded-full bg-[#FF2D85] text-white text-center text-[12px] font-bold uppercase tracking-wider">Assinar</a>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </nav>
         </div>
         <main>
@@ -250,6 +272,8 @@ export default function App() {
           </section>
           <div >
             <section id="solucoes" className="py-24 relative overflow-hidden">
+              <div id="recursos" className="absolute -top-24 left-0 pointer-events-none" />
+              <div id="galeria" className="absolute -top-24 left-0 pointer-events-none" />
               <div className="absolute inset-0 grid-bg opacity-10 pointer-events-none" />
               <div className="container mx-auto px-4 max-w-6xl relative z-10">
                 <div className="text-center mb-20">
