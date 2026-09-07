@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Sparkles, Check, ChevronDown, Menu, ArrowRight } from 'lucide-react';
+import { Sparkles, Check, ChevronDown, Menu, ArrowRight, Store, Users, Play, Workflow, Clapperboard, Video } from 'lucide-react';
 
 const DEFAULT_PLAN = {
   mensalPrice: "245,00",
@@ -68,6 +68,83 @@ const FAQS = [
 
 export default function App() {
   const [activeStep, setActiveStep] = useState(0);
+  const [activeFeatureId, setActiveFeatureId] = useState('vitrine');
+
+  const FEATURES = [
+    {
+      id: "vitrine",
+      title: "VITRINE",
+      index: "01 / 05",
+      heading: <>Descubra os campeões <span className="text-[#FF2D85]">antes da concorrência.</span></>,
+      desc: "Uma vitrine viva, atualizada a cada hora, com os produtos que estão bombando no momento. Salve seus favoritos e dispare a criação de conteúdo direto do card.",
+      bullets: [
+        "Curadoria atualizada de hora em hora",
+        "Filtros por nicho e tendência",
+        "Geração de UGC com um clique"
+      ],
+      image: "/assets/vitrine.png",
+      Icon: Store
+    },
+    {
+      id: "avatares",
+      title: "AVATARES",
+      index: "02 / 05",
+      heading: <>Rostos que geram <span className="text-[#FF2D85]">conexão e vendas.</span></>,
+      desc: "Um elenco diversificado de avatares ultra-realistas prontos para representar sua marca. Encontre o perfil perfeito para o seu nicho e crie vídeos que engajam.",
+      bullets: [
+        "Dezenas de perfis e idades",
+        "Sincronização labial perfeita",
+        "Expressões naturais e persuasivas"
+      ],
+      image: "/assets/avatares.png",
+      Icon: Users
+    },
+    {
+      id: "revolucao",
+      title: "REVOLUÇÃO",
+      index: "03 / 05",
+      heading: <>A <span className="text-[#FF2D85]">revolução</span> na criação de vídeos.</>,
+      desc: "Deixe a inteligência artificial roteirizar e dirigir seus anúncios. Scripts validados por milhões de visualizações, adaptados para o seu produto em segundos.",
+      bullets: [
+        "Frameworks de alta conversão",
+        "Geração instantânea de roteiros",
+        "Vozes neurais ultra-realistas"
+      ],
+      image: "/assets/revolucao.png",
+      Icon: Sparkles
+    },
+    {
+      id: "fluxo",
+      title: "FLUXO",
+      index: "04 / 05",
+      heading: <>Um <span className="text-[#FF2D85]">fluxo de trabalho</span> contínuo.</>,
+      desc: "Gerencie todas as suas campanhas e criativos em um só lugar. Do planejamento à exportação, tudo foi desenhado para economizar o seu tempo.",
+      bullets: [
+        "Organização por projetos",
+        "Histórico de versões",
+        "Exportação em massa"
+      ],
+      image: "/assets/fluxo.png",
+      Icon: Workflow
+    },
+    {
+      id: "tokeditor",
+      title: "TOK EDITOR",
+      index: "05 / 05",
+      heading: <><span className="text-[#FF2D85]">Tok Editor:</span> Nascido para viralizar.</>,
+      desc: "Um editor de vídeo pensado exclusivamente para formatos curtos. Adicione legendas dinâmicas, transições virais e efeitos sonoros com poucos cliques.",
+      bullets: [
+        "Legendas animadas automáticas",
+        "Biblioteca de sons virais",
+        "Formatos otimizados para TikTok"
+      ],
+      image: "/assets/editor.jpg",
+      Icon: Video
+    }
+  ];
+
+  const activeFeature = FEATURES.find(f => f.id === activeFeatureId) || FEATURES[0];
+
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault();
     const element = document.getElementById(id);
@@ -180,78 +257,70 @@ export default function App() {
                   <h2 className="text-4xl md:text-6xl font-medium mb-6 text-white tracking-tight">Tudo o que você precisa para <br /><span className="text-[#FF2D85]">escalar seus resultados.</span></h2>
                   <p className="text-[#94A3B8] text-lg max-w-2xl mx-auto font-light mb-12">Descubra as ferramentas que vão transformar seu processo de criação de conteúdo.</p>
                 </div>
-                <div className="glass-premium rounded-[2.5rem] overflow-hidden border-white/[0.08] flex flex-col lg:flex-row min-h-[600px] mb-12">
-                  <div className="lg:w-[40%] p-8 sm:p-12 flex flex-col justify-center">
-                    <div >
-                      <div className="text-[11px] font-bold text-[#FF2D85]/60 tracking-[0.2em] mb-6 flex items-center gap-2"><span>01 / 05</span>
-                        <div className="h-[1px] w-8 bg-white/10" /><span className="uppercase">VITRINE</span>
+                <div className="glass-premium rounded-[2.5rem] overflow-hidden border-white/[0.08] flex flex-col lg:flex-row min-h-[600px] mb-12 relative">
+                  <motion.div 
+                    key={activeFeature.id + "-content"}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="lg:w-[40%] p-8 sm:p-12 flex flex-col justify-center"
+                  >
+                    <div>
+                      <div className="text-[11px] font-bold text-[#FF2D85]/60 tracking-[0.2em] mb-6 flex items-center gap-2"><span>{activeFeature.index}</span>
+                        <div className="h-[1px] w-8 bg-white/10" /><span className="uppercase">{activeFeature.title}</span>
                       </div>
-                      <h3 className="text-3xl sm:text-4xl font-medium text-white mb-6 tracking-tight leading-tight">Descubra os campeões <span className="text-[#FF2D85]">antes da concorrência.</span></h3>
-                      <p className="text-[#94A3B8] font-light leading-relaxed mb-8">Uma vitrine viva, atualizada a cada hora, com os produtos que estão bombando no momento. Salve seus favoritos e dispare a criação de conteúdo direto do card.</p>
+                      <h3 className="text-3xl sm:text-4xl font-medium text-white mb-6 tracking-tight leading-tight">{activeFeature.heading}</h3>
+                      <p className="text-[#94A3B8] font-light leading-relaxed mb-8">{activeFeature.desc}</p>
                       <div className="space-y-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-5 h-5 rounded-full bg-[#FF2D85]/10 border border-[#FF2D85]/20 flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-check w-3 h-3 text-[#FF2D85]">
-                              <path d="M20 6 9 17l-5-5" />
-                            </svg></div><span className="text-sm text-[#C9D2E3] font-light">Curadoria atualizada de hora em hora</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <div className="w-5 h-5 rounded-full bg-[#FF2D85]/10 border border-[#FF2D85]/20 flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-check w-3 h-3 text-[#FF2D85]">
-                              <path d="M20 6 9 17l-5-5" />
-                            </svg></div><span className="text-sm text-[#C9D2E3] font-light">Filtros por nicho e tendência</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <div className="w-5 h-5 rounded-full bg-[#FF2D85]/10 border border-[#FF2D85]/20 flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-check w-3 h-3 text-[#FF2D85]">
-                              <path d="M20 6 9 17l-5-5" />
-                            </svg></div><span className="text-sm text-[#C9D2E3] font-light">Geração de UGC com um clique</span>
-                        </div>
+                        {activeFeature.bullets.map((bullet, idx) => (
+                          <div key={idx} className="flex items-center gap-3">
+                            <div className="w-5 h-5 rounded-full bg-[#FF2D85]/10 border border-[#FF2D85]/20 flex items-center justify-center">
+                              <Check className="w-3 h-3 text-[#FF2D85]" />
+                            </div>
+                            <span className="text-sm text-[#C9D2E3] font-light">{bullet}</span>
+                          </div>
+                        ))}
                       </div>
                     </div>
-                  </div>
-                  <div className="lg:w-[60%] bg-[#0A0C1A] relative border-l border-white/5 flex items-center justify-center p-8">
-                    <div className="w-full h-full rounded-2xl overflow-hidden shadow-2xl border border-white/10 relative" ><img src="/assets/vitrine.png" alt="VITRINE" className="w-full h-full object-cover" /></div>
-                  </div>
+                  </motion.div>
+                  <motion.div 
+                    key={activeFeature.id + "-image"}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5 }}
+                    className="lg:w-[60%] bg-[#0A0C1A] relative border-l border-white/5 flex items-center justify-center p-8"
+                  >
+                    <div className="w-full h-full rounded-2xl overflow-hidden shadow-2xl border border-white/10 relative">
+                      <img 
+                        src={activeFeature.image} 
+                        alt={activeFeature.title} 
+                        className="w-full h-full object-cover" 
+                        referrerPolicy="no-referrer"
+                        onError={(e) => {
+                          const target = e.currentTarget as HTMLImageElement;
+                          if (target.src && !target.src.includes('vitrine.png')) {
+                            target.src = '/assets/vitrine.png';
+                          }
+                        }}
+                      />
+                    </div>
+                  </motion.div>
                 </div>
-                <div className="flex flex-wrap justify-center gap-2 mb-24"><button className="px-5 py-2.5 rounded-full border transition-all duration-300 flex items-center gap-2 group bg-[#FF2D85]/20 border-[#FF2D85]/40 text-white shadow-[0_0_20px_rgba(255,45,133,0.15)]"><svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-store w-3.5 h-3.5 text-[#FF2D85]">
-                      <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7" />
-                      <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-                      <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4" />
-                      <path d="M2 7h20" />
-                      <path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7" />
-                    </svg><span className="text-[11px] font-medium uppercase tracking-widest">VITRINE</span></button><button className="px-5 py-2.5 rounded-full border transition-all duration-300 flex items-center gap-2 group bg-white/[0.03] border-white/10 text-[#94A3B8] hover:bg-white/[0.08] backdrop-blur-md"><svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-users w-3.5 h-3.5 text-[#94A3B8]">
-                      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                      <circle cx={9} cy={7} r={4} />
-                      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                    </svg><span className="text-[11px] font-medium uppercase tracking-widest">AVATARES</span></button><button className="px-5 py-2.5 rounded-full border transition-all duration-300 flex items-center gap-2 group bg-white/[0.03] border-white/10 text-[#94A3B8] hover:bg-white/[0.08] backdrop-blur-md"><svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-sparkles w-3.5 h-3.5 text-[#94A3B8]">
-                      <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" />
-                      <path d="M20 3v4" />
-                      <path d="M22 5h-4" />
-                      <path d="M4 17v2" />
-                      <path d="M5 18H3" />
-                    </svg><span className="text-[11px] font-medium uppercase tracking-widest">REVOLUÇÃO</span></button><button className="px-5 py-2.5 rounded-full border transition-all duration-300 flex items-center gap-2 group bg-white/[0.03] border-white/10 text-[#94A3B8] hover:bg-white/[0.08] backdrop-blur-md"><svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-wand-sparkles w-3.5 h-3.5 text-[#94A3B8]">
-                      <path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72" />
-                      <path d="m14 7 3 3" />
-                      <path d="M5 6v4" />
-                      <path d="M19 14v4" />
-                      <path d="M10 2v2" />
-                      <path d="M7 8H3" />
-                      <path d="M21 16h-4" />
-                      <path d="M11 3H9" />
-                    </svg><span className="text-[11px] font-medium uppercase tracking-widest">FLUXO</span></button><button className="px-5 py-2.5 rounded-full border transition-all duration-300 flex items-center gap-2 group bg-white/[0.03] border-white/10 text-[#94A3B8] hover:bg-white/[0.08] backdrop-blur-md"><svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-video w-3.5 h-3.5 text-[#94A3B8]">
-                      <path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5" />
-                      <rect x={2} y={6} width={14} height={12} rx={2} />
-                    </svg><span className="text-[11px] font-medium uppercase tracking-widest">TOKEDITOR</span></button></div>
-                <div id="galeria" className="mb-32 mt-20">
-                  <div className="text-center mb-16">
-                    <p className="text-[#FF2D85] text-[10px] font-bold tracking-[0.3em] uppercase mb-4">SHOWCASE</p>
-                    <h3 className="text-4xl md:text-6xl font-medium mb-6 text-white tracking-tight">Vídeos que <span className="text-[#FF2D85]">convertem.</span></h3>
-                    <p className="text-[#94A3B8] text-lg font-light">Conteúdo gerado por criadores que usam a plataforma para escalar resultados.</p>
-                  </div>
-                  <div className="relative overflow-hidden rounded-3xl glass-premium p-8 sm:p-12">
-                    <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-[#05060F] to-transparent z-10 opacity-50" />
-                    <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[#05060F] to-transparent z-10 opacity-50" />
-                    <div className="flex gap-6 animate-marquee w-max hover:[animation-play-state:paused]"><video src="/videos/video-1.mp4" poster="/videos/video-1.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-2.mp4" poster="/videos/video-2.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-3.mp4" poster="/videos/video-3.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-4.mp4" poster="/videos/video-4.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-5.mp4" poster="/videos/video-5.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-6.mp4" poster="/videos/video-6.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-7.mp4" poster="/videos/video-7.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-8.mp4" poster="/videos/video-8.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-9.mp4" poster="/videos/video-9.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-10.mp4" poster="/videos/video-10.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-1.mp4" poster="/videos/video-1.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-2.mp4" poster="/videos/video-2.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-3.mp4" poster="/videos/video-3.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-4.mp4" poster="/videos/video-4.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-5.mp4" poster="/videos/video-5.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-6.mp4" poster="/videos/video-6.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-7.mp4" poster="/videos/video-7.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-8.mp4" poster="/videos/video-8.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-9.mp4" poster="/videos/video-9.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-10.mp4" poster="/videos/video-10.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /></div>
-                  </div>
+                <div className="flex flex-wrap justify-center gap-2 mb-24">
+                  {FEATURES.map((feature) => {
+                    const isActive = activeFeatureId === feature.id;
+                    const Icon = feature.Icon;
+                    return (
+                      <button 
+                        key={feature.id}
+                        onClick={() => setActiveFeatureId(feature.id)}
+                        className={`px-5 py-2.5 rounded-full border transition-all duration-300 flex items-center gap-2 group ${isActive ? 'bg-[#FF2D85]/20 border-[#FF2D85]/40 text-white shadow-[0_0_20px_rgba(255,45,133,0.15)]' : 'bg-white/[0.03] border-white/10 text-[#94A3B8] hover:bg-white/[0.08] backdrop-blur-md'}`}
+                      >
+                        <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-[#FF2D85]' : 'text-[#94A3B8]'}`} />
+                        <span className="text-[11px] font-medium uppercase tracking-widest">{feature.title}</span>
+                      </button>
+                    );
+                  })}
                 </div>
                 <motion.div 
                   id="como-funciona" 
