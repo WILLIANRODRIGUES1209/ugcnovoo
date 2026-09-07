@@ -158,6 +158,7 @@ export default function App() {
   const [couponInput, setCouponInput] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
   const [appliedCouponCode, setAppliedCouponCode] = useState<string>('');
+  const [isChangingCoupon, setIsChangingCoupon] = useState<boolean>(false);
   const [timeLeft, setTimeLeft] = useState<number>(355); // 05:55 countdown exactly like screenshot
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
@@ -206,14 +207,34 @@ export default function App() {
     setOpenFaq(openFaq === index ? null : index);
   };
 
-  const handleApplyCoupon = () => {
-    const code = couponInput.toUpperCase().trim();
+  const handleApplyCoupon = (overrideCode?: string) => {
+    const raw = typeof overrideCode === 'string' ? overrideCode : couponInput;
+    const code = raw.toUpperCase().trim();
     if ((COUPONS as any)[code]) {
       setAppliedCoupon((COUPONS as any)[code]);
       setAppliedCouponCode(code);
+      setCouponInput(code);
       setTimeLeft(355);
+      setIsChangingCoupon(false);
+      if (typeof window !== 'undefined' && window.history?.replaceState) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('cupom', code);
+        window.history.replaceState({}, document.title, url.pathname + (url.search ? url.search : '') + url.hash);
+      }
     } else {
       alert('Cupom inválido ou expirado.');
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null);
+    setAppliedCouponCode('');
+    setCouponInput('');
+    setIsChangingCoupon(false);
+    if (typeof window !== 'undefined' && window.history?.replaceState) {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('cupom');
+      window.history.replaceState({}, document.title, url.pathname + (url.search ? url.search : '') + url.hash);
     }
   };
 
@@ -259,6 +280,14 @@ export default function App() {
                   >
                     ADQUIRIR AGORA →
                   </a>
+                  <button
+                    onClick={handleRemoveCoupon}
+                    title="Remover cupom e voltar aos valores originais"
+                    className="bg-black/30 hover:bg-black/50 text-white font-medium text-[10px] sm:text-[11px] px-2.5 py-1.5 rounded-full flex items-center gap-1 transition-all border border-white/20 shrink-0 whitespace-nowrap cursor-pointer"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">Remover cupom</span>
+                  </button>
                 </div>
                 <div className="flex items-center gap-1.5 text-white text-[11px] sm:text-xs font-medium tracking-tight text-center md:text-right shrink-0">
                   <span>🔥</span>
@@ -516,14 +545,66 @@ export default function App() {
                   <h2 className="text-4xl md:text-6xl font-medium mb-6 text-white tracking-tight" >Escolha o ritmo da sua <br /><span className="text-[#FF2D85]">criação.</span></h2>
                   <p className="text-[#94A3B8] text-lg max-w-xl mx-auto font-light" >Cancele quando quiser. Sem letras miúdas.</p>
                   <div className="mt-10 flex flex-col items-center gap-4" >
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-md">
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-lg">
                       {appliedCoupon ? (
-                        <div className="flex flex-col items-center justify-center bg-gradient-to-r from-[#FF2D85]/20 to-[#9d174d]/20 border border-[#FF2D85]/30 rounded-2xl py-3 px-6 w-full text-center shadow-[0_0_20px_rgba(255,45,133,0.15)]">
-                           <div className="flex items-center justify-center gap-2 mb-1">
+                        <div className="flex flex-col items-center justify-center bg-gradient-to-r from-[#FF2D85]/20 to-[#9d174d]/20 border border-[#FF2D85]/30 rounded-2xl py-4 px-6 w-full text-center shadow-[0_0_20px_rgba(255,45,133,0.15)] relative">
+                           <div className="flex items-center justify-center gap-2 mb-1 flex-wrap">
                              <span className="text-xl">🎉</span>
-                             <span className="text-[#FF2D85] font-bold text-[12px] tracking-widest uppercase">CUPOM APLICADO {appliedCoupon.discountText}</span>
+                             <span className="text-[#FF2D85] font-bold text-[12px] tracking-widest uppercase">
+                               CUPOM <span className="bg-black/40 px-2 py-0.5 rounded text-white border border-white/10">{appliedCouponCode}</span> APLICADO {appliedCoupon.discountText}
+                             </span>
                            </div>
-                           <span className="text-white text-[10px] font-bold tracking-widest uppercase">{appliedCoupon.badgeText}</span>
+                           <span className="text-white/90 text-[10px] font-bold tracking-widest uppercase mb-1">{appliedCoupon.badgeText}</span>
+
+                           <div className="flex items-center justify-center gap-2.5 mt-3 pt-3 border-t border-white/10 w-full flex-wrap">
+                             <button
+                               onClick={handleRemoveCoupon}
+                               className="text-[11px] text-white/80 hover:text-white flex items-center gap-1.5 py-1.5 px-3.5 rounded-full bg-white/5 hover:bg-white/15 transition-all border border-white/10 font-medium cursor-pointer"
+                             >
+                               <X className="w-3.5 h-3.5 text-rose-400" />
+                               Remover cupom (preço normal)
+                             </button>
+                             <button
+                               onClick={() => {
+                                 setIsChangingCoupon(!isChangingCoupon);
+                                 if (!isChangingCoupon) setCouponInput('');
+                               }}
+                               className="text-[11px] text-[#FF2D85] hover:text-[#ff60a5] flex items-center gap-1.5 py-1.5 px-3.5 rounded-full bg-[#FF2D85]/10 hover:bg-[#FF2D85]/20 transition-all border border-[#FF2D85]/30 font-medium cursor-pointer"
+                             >
+                               <Sparkles className="w-3.5 h-3.5" />
+                               {isChangingCoupon ? "Fechar" : "Trocar por outro cupom"}
+                             </button>
+                           </div>
+
+                           {isChangingCoupon && (
+                             <motion.div
+                               initial={{ opacity: 0, y: -6 }}
+                               animate={{ opacity: 1, y: 0 }}
+                               className="w-full mt-3 pt-3 border-t border-white/10"
+                             >
+                               <div className="flex flex-col sm:flex-row items-center justify-center gap-2 w-full">
+                                 <div className="relative w-full max-w-[260px]">
+                                   <input
+                                     type="text"
+                                     placeholder="DIGITE OUTRO CUPOM"
+                                     className="w-full bg-black/50 border border-white/20 rounded-full py-2 px-4 text-[10px] font-medium tracking-widest text-white placeholder:text-white/30 focus:outline-none focus:border-[#FF2D85] uppercase text-center"
+                                     value={couponInput}
+                                     onChange={(e) => setCouponInput(e.target.value)}
+                                     onKeyDown={(e) => {
+                                       if (e.key === 'Enter') handleApplyCoupon();
+                                     }}
+                                     autoFocus
+                                   />
+                                 </div>
+                                 <button
+                                   onClick={() => handleApplyCoupon()}
+                                   className="bg-[#FF2D85] hover:bg-[#E62976] text-white text-[10px] font-bold py-2 px-5 rounded-full transition-all uppercase tracking-widest whitespace-nowrap cursor-pointer shadow-md"
+                                 >
+                                   Aplicar novo
+                                 </button>
+                               </div>
+                             </motion.div>
+                           )}
                         </div>
                       ) : (
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
@@ -531,9 +612,23 @@ export default function App() {
                             <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
                               <Sparkles className="w-4 h-4 text-white/20" />
                             </div>
-                            <input type="text" placeholder="TEM UM CUPOM DE INDICAÇÃO?" className="w-full bg-white/5 border border-white/10 rounded-full py-3 pl-12 pr-4 text-[10px] font-medium tracking-widest text-white placeholder:text-white/20 focus:outline-none focus:border-[#FF2D85]/50 transition-colors uppercase" value={couponInput} onChange={(e) => setCouponInput(e.target.value)} />
+                            <input
+                              type="text"
+                              placeholder="TEM UM CUPOM DE INDICAÇÃO?"
+                              className="w-full bg-white/5 border border-white/10 rounded-full py-3 pl-12 pr-4 text-[10px] font-medium tracking-widest text-white placeholder:text-white/20 focus:outline-none focus:border-[#FF2D85]/50 transition-colors uppercase"
+                              value={couponInput}
+                              onChange={(e) => setCouponInput(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') handleApplyCoupon();
+                              }}
+                            />
                           </div>
-                          <button onClick={handleApplyCoupon} className="bg-[#FF2D85] hover:bg-[#E62976] disabled:opacity-50 text-white text-[10px] font-bold py-3 px-8 rounded-full transition-all uppercase tracking-widest flex items-center justify-center gap-2">Aplicar</button>
+                          <button
+                            onClick={() => handleApplyCoupon()}
+                            className="bg-[#FF2D85] hover:bg-[#E62976] disabled:opacity-50 text-white text-[10px] font-bold py-3 px-8 rounded-full transition-all uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer"
+                          >
+                            Aplicar
+                          </button>
                         </div>
                       )}
                     </div>
