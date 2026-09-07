@@ -19,7 +19,7 @@ const COUPONS = {
     vitalicioCash: "197,00",
     vitalicioLink: "https://checkout.applyfy.com.br/checkout/cmrjfn9730jr901olwnzyqr8p?offer=OO947ZE",
     discountText: "- PROMOÇÃO ATIVADA",
-    badgeText: "+ KIT VIRAL PREMIUM DESBLOQUEADO",
+    badgeText: "+ BIBLIOTECA DE PROMPTS DESBLOQUEADA",
   },
   "CREATOR40": {
     mensalOriginal: "245,00",
