@@ -83,7 +83,7 @@ export default function App() {
     if (cupomParam) {
       const code = cupomParam.toUpperCase();
       if (COUPONS[code]) {
-        setAppliedCoupon({ code, discount: COUPONS[code] });
+        setAppliedCoupon(COUPONS[code]);
         setCouponInput(code);
       }
     }
