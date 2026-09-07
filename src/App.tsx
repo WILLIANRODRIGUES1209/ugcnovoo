@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { motion } from 'motion/react';
 import { Sparkles, Check, ChevronDown, Menu, ArrowRight } from 'lucide-react';
 
 const DEFAULT_PLAN = {
@@ -66,6 +67,7 @@ const FAQS = [
 ];
 
 export default function App() {
+  const [activeStep, setActiveStep] = useState(0);
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault();
     const element = document.getElementById(id);
@@ -73,6 +75,20 @@ export default function App() {
       element.scrollIntoView({ behavior: 'smooth' });
     }
   };
+  // Extract URL parameters on mount
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const cupomParam = params.get('cupom');
+    
+    if (cupomParam) {
+      const code = cupomParam.toUpperCase();
+      if (COUPONS[code]) {
+        setAppliedCoupon({ code, discount: COUPONS[code] });
+        setCouponInput(code);
+      }
+    }
+  }, []);
+
   const [couponInput, setCouponInput] = useState('');
     const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [openFaq, setOpenFaq] = useState(null);
@@ -109,7 +125,7 @@ export default function App() {
           <nav className="relative transition-all duration-500 rounded-full border shadow-2xl overflow-hidden pointer-events-auto backdrop-blur-2xl bg-white/[0.02] border-white/10">
             <div className="px-6 h-12 sm:h-14 flex items-center justify-between relative z-10"><a href="#inicio" onClick={(e) => scrollToSection(e, 'inicio')} className="flex items-center gap-2"><img src="/assets/creator-hub-logo.png" alt="Creator Hub" width={24} height={24} className="h-6 w-auto" /><span className="font-medium text-white text-base tracking-tight hidden sm:inline-block font-sans">Creator Hub</span></a>
               <div className="hidden md:flex items-center gap-8"><a href="#recursos" onClick={(e) => scrollToSection(e, 'recursos')} className="text-sm font-medium text-[#94A3B8] hover:text-white transition-colors">Recursos</a><a href="#galeria" onClick={(e) => scrollToSection(e, 'galeria')} className="text-sm font-medium text-[#94A3B8] hover:text-white transition-colors">Galeria</a><a href="#como-funciona" onClick={(e) => scrollToSection(e, 'como-funciona')} className="text-sm font-medium text-[#94A3B8] hover:text-white transition-colors">Como funciona</a><a href="#planos" onClick={(e) => scrollToSection(e, 'planos')} className="text-sm font-medium text-[#94A3B8] hover:text-white transition-colors">Planos</a><a href="#faq" onClick={(e) => scrollToSection(e, 'faq')} className="text-sm font-medium text-[#94A3B8] hover:text-white transition-colors">FAQ</a></div>
-              <div className="hidden md:flex items-center gap-3"><a href="https://app.ugclab.com.br/auth" className="px-5 py-2 rounded-full bg-white/5 border border-white/10 text-white text-[12px] font-bold hover:bg-white/10 transition-all uppercase tracking-wider">Entrar</a><a href="#planos" onClick={(e) => scrollToSection(e, 'planos')} className="px-5 py-2 rounded-full bg-[#FF2D85]/15 border border-[#FF2D85]/30 backdrop-blur-md text-white text-[12px] font-bold hover:bg-[#FF2D85]/25 transition-all hover:shadow-[0_0_15px_rgba(255,45,133,0.2)] uppercase tracking-wider relative overflow-hidden group">
+              <div className="hidden md:flex items-center gap-3"><a href="https://app.creattorhub.com.br/indique" className="px-5 py-2 rounded-full bg-white/5 border border-white/10 text-white text-[12px] font-bold hover:bg-white/10 transition-all uppercase tracking-wider">Entrar</a><a href="#planos" onClick={(e) => scrollToSection(e, 'planos')} className="px-5 py-2 rounded-full bg-[#FF2D85]/15 border border-[#FF2D85]/30 backdrop-blur-md text-white text-[12px] font-bold hover:bg-[#FF2D85]/25 transition-all hover:shadow-[0_0_15px_rgba(255,45,133,0.2)] uppercase tracking-wider relative overflow-hidden group">
                   <div className="absolute inset-0 bg-gradient-to-r from-[#FF2D85]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" /><span className="relative z-10">Assinar</span>
                 </a></div><button className="md:hidden w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white transition-all hover:bg-white/10" aria-label="Abrir menu"><svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-menu">
                   <line x1={4} x2={20} y1={12} y2={12} />
@@ -237,54 +253,101 @@ export default function App() {
                     <div className="flex gap-6 animate-marquee w-max hover:[animation-play-state:paused]"><video src="/videos/video-1.mp4" poster="/videos/video-1.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-2.mp4" poster="/videos/video-2.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-3.mp4" poster="/videos/video-3.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-4.mp4" poster="/videos/video-4.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-5.mp4" poster="/videos/video-5.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-6.mp4" poster="/videos/video-6.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-7.mp4" poster="/videos/video-7.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-8.mp4" poster="/videos/video-8.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-9.mp4" poster="/videos/video-9.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-10.mp4" poster="/videos/video-10.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-1.mp4" poster="/videos/video-1.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-2.mp4" poster="/videos/video-2.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-3.mp4" poster="/videos/video-3.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-4.mp4" poster="/videos/video-4.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-5.mp4" poster="/videos/video-5.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-6.mp4" poster="/videos/video-6.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-7.mp4" poster="/videos/video-7.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-8.mp4" poster="/videos/video-8.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-9.mp4" poster="/videos/video-9.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /><video src="/videos/video-10.mp4" poster="/videos/video-10.jpg" autoPlay muted loop playsInline className="h-[450px] w-72 object-cover rounded-[2rem] flex-shrink-0 border border-white/10 shadow-2xl bg-[#0B1020]" /></div>
                   </div>
                 </div>
-                <div id="como-funciona" className="mt-40 mb-24">
+                <motion.div 
+                  id="como-funciona" 
+                  className="mt-40 mb-24"
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8 }}
+                >
                   <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
                     <div className="lg:w-1/2 text-left">
                       <p className="text-[#A78BFA] text-[10px] font-bold tracking-[0.3em] uppercase mb-4" >COMO FUNCIONA</p>
                       <h2 className="text-4xl md:text-6xl font-medium mb-6 text-white tracking-tight leading-tight" >Três passos. <br /><span className="text-gradient">Resultado de estúdio.</span></h2>
-                      <p className="text-[#94A3B8] text-lg max-w-md font-light leading-relaxed mb-8" >Do briefing à publicação em minutos. Passe o mouse para abrir o baralho e ver o fluxo completo.</p>
+                      <p className="text-[#94A3B8] text-lg max-w-md font-light leading-relaxed mb-8" >Do briefing à publicação em minutos. Clique nos cards para trazer para frente e ler o fluxo completo.</p>
                     </div>
                     <div className="lg:w-1/2 relative h-[450px] w-full max-w-[500px] flex items-center justify-center">
-                      <div className="relative w-full h-full flex items-center justify-center group">
-                        <div style={{zIndex: 30}} className="glass-premium rounded-[2.5rem] p-8 sm:p-10 w-[280px] sm:w-[320px] h-[380px] absolute border-white/[0.08] shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col justify-between transition-all duration-500 cursor-pointer bg-[#0A0C1A]/80 transform rotate-[-8deg] -translate-x-4 translate-y-4 group-hover:rotate-[-15deg] group-hover:-translate-x-28 group-hover:-translate-y-16 opacity-100">
-                          <div>
-                            <div className="text-[10px] font-bold text-[#A78BFA]/80 tracking-[0.3em] mb-6 uppercase">PASSO 01</div>
-                            <h3 className="text-2xl font-medium text-white mb-4 tracking-tight">Escolha um produto</h3>
-                            <p className="text-[#94A3B8] text-sm font-light leading-relaxed">Selecione um produto ou envie o seu.</p>
-                          </div>
-                          <div className="flex justify-between items-end">
-                            <div className="h-[1px] bg-white/10 flex-1 mr-4 mb-2" /><span className="text-[10px] font-mono text-[#A78BFA]/40">01/03</span>
-                          </div>
-                        </div>
-                        <div style={{zIndex: 20}} className="glass-premium rounded-[2.5rem] p-8 sm:p-10 w-[280px] sm:w-[320px] h-[380px] absolute border-white/[0.08] shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col justify-between transition-all duration-500 cursor-pointer bg-[#0A0C1A]/80 transform rotate-[0deg] translate-y-0 group-hover:-translate-y-16 opacity-100">
-                          <div>
-                            <div className="text-[10px] font-bold text-[#A78BFA]/80 tracking-[0.3em] mb-6 uppercase">PASSO 02</div>
-                            <h3 className="text-2xl font-medium text-white mb-4 tracking-tight">Crie seu conteúdo</h3>
-                            <p className="text-[#94A3B8] text-sm font-light leading-relaxed">Gere vídeos, imagens e roteiros com IA.</p>
-                          </div>
-                          <div className="flex justify-between items-end">
-                            <div className="h-[1px] bg-white/10 flex-1 mr-4 mb-2" /><span className="text-[10px] font-mono text-[#A78BFA]/40">02/03</span>
-                          </div>
-                        </div>
-                        <div style={{zIndex: 10}} className="glass-premium rounded-[2.5rem] p-8 sm:p-10 w-[280px] sm:w-[320px] h-[380px] absolute border-white/[0.08] shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col justify-between transition-all duration-500 cursor-pointer bg-[#0A0C1A]/80 transform rotate-[8deg] translate-x-4 -translate-y-4 group-hover:rotate-[15deg] group-hover:translate-x-28 group-hover:translate-y-8 opacity-100">
-                          <div>
-                            <div className="text-[10px] font-bold text-[#A78BFA]/80 tracking-[0.3em] mb-6 uppercase">PASSO 03</div>
-                            <h3 className="text-2xl font-medium text-white mb-4 tracking-tight">Publique e venda</h3>
-                            <p className="text-[#94A3B8] text-sm font-light leading-relaxed">Use o conteúdo em TikTok Shop, anúncios ou redes sociais.</p>
-                          </div>
-                          <div className="flex justify-between items-end">
-                            <div className="h-[1px] bg-white/10 flex-1 mr-4 mb-2" /><span className="text-[10px] font-mono text-[#A78BFA]/40">03/03</span>
-                          </div>
-                        </div>
+                      <div className="relative w-full h-full flex items-center justify-center">
+                        {[
+                          {
+                            title: 'Escolha um produto',
+                            desc: 'Selecione um produto ou envie o seu.',
+                            step: '01'
+                          },
+                          {
+                            title: 'Crie seu conteúdo',
+                            desc: 'Gere vídeos, imagens e roteiros com IA.',
+                            step: '02'
+                          },
+                          {
+                            title: 'Publique e venda',
+                            desc: 'Use o conteúdo em TikTok Shop, anúncios ou redes sociais.',
+                            step: '03'
+                          }
+                        ].map((item, index) => {
+                          const isActive = activeStep === index;
+                          const offset = index - activeStep;
+                          
+                          // Configurações de posição para empilhar
+                          let rotate = 0;
+                          let translateX = 0;
+                          let translateY = 0;
+                          let zIndex = 30 - index;
+                          
+                          if (isActive) {
+                            rotate = 0;
+                            translateX = 0;
+                            translateY = -20;
+                            zIndex = 40;
+                          } else if (index === (activeStep + 1) % 3) {
+                            rotate = 8;
+                            translateX = 30;
+                            translateY = 10;
+                            zIndex = 30;
+                          } else {
+                            rotate = -8;
+                            translateX = -30;
+                            translateY = 10;
+                            zIndex = 20;
+                          }
+                          
+                          return (
+                            <motion.div 
+                              key={index}
+                              onClick={() => setActiveStep(index)}
+                              initial={false}
+                              animate={{ 
+                                rotate: rotate, 
+                                x: translateX, 
+                                y: translateY,
+                                scale: isActive ? 1 : 0.95
+                              }}
+                              transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                              style={{ zIndex }}
+                              className="glass-premium rounded-[2.5rem] p-8 sm:p-10 w-[280px] sm:w-[320px] h-[380px] absolute border-white/[0.08] shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col justify-between cursor-pointer bg-[#0A0C1A]/90 hover:border-white/20"
+                            >
+                              <div>
+                                <div className="text-[10px] font-bold text-[#A78BFA]/80 tracking-[0.3em] mb-6 uppercase">PASSO {item.step}</div>
+                                <h3 className="text-2xl font-medium text-white mb-4 tracking-tight">{item.title}</h3>
+                                <p className="text-[#94A3B8] text-sm font-light leading-relaxed">{item.desc}</p>
+                              </div>
+                              <div className="flex justify-between items-end">
+                                <div className="h-[1px] bg-white/10 flex-1 mr-4 mb-2" />
+                                <span className="text-[10px] font-mono text-[#A78BFA]/40">{item.step}/03</span>
+                              </div>
+                            </motion.div>
+                          );
+                        })}
                       </div>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               </div>
             </section>
           </div>
           <div >
-            <section id="planos" className="py-24 relative overflow-hidden">
+            <motion.section id="planos" className="py-24 relative overflow-hidden" initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, ease: "easeOut" }}>
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#FF2D85]/5 blur-[150px] pointer-events-none" />
               <div className="container mx-auto px-4 max-w-6xl relative z-10">
                 <div className="text-center mb-16">
@@ -411,7 +474,7 @@ export default function App() {
                   </div>
                 </div>
               </div>
-            </section>
+            </motion.section>
           </div>
           <div >
             <section id="faq" className="py-24 relative">
@@ -452,10 +515,10 @@ export default function App() {
                   <div className="flex-1 text-left">
                     <h2 className="text-4xl md:text-5xl font-medium text-white mb-6 leading-tight tracking-tight">Pronto para dominar <br /><span className="text-[#FF2D85]">o feed com Creator Hub?</span></h2>
                     <p className="text-base text-[#94A3B8] mb-12 max-w-md font-light leading-relaxed">Descubra o poder da criação sem limites onde cada pixel é pensado para converter e encantar seu público.</p>
-                    <div className="flex flex-col sm:flex-row items-center gap-4"><a href="https://app.ugclab.com.br/auth" className="w-full sm:w-auto px-8 py-4 rounded-full bg-[#FF2D85] text-white font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(255,45,133,0.3)] hover:scale-105 transition-transform">Assinar agora<svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right w-4 h-4">
+                    <div className="flex flex-col sm:flex-row items-center gap-4"><a href="#planos" onClick={(e) => scrollToSection(e, 'planos')} className="w-full sm:w-auto px-8 py-4 rounded-full bg-[#FF2D85] text-white font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(255,45,133,0.3)] hover:scale-105 transition-transform">Assinar agora<svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right w-4 h-4">
                           <path d="M5 12h14" />
                           <path d="m12 5 7 7-7 7" />
-                        </svg></a><a href="https://app.ugclab.com.br/auth" className="w-full sm:w-auto px-8 py-4 rounded-full bg-white/5 border border-white/10 text-white font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-white/10 transition-colors">Já tenho conta</a></div>
+                        </svg></a><a href="https://app.creattorhub.com.br/indique" className="w-full sm:w-auto px-8 py-4 rounded-full bg-white/5 border border-white/10 text-white font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-white/10 transition-colors">Já tenho conta</a></div>
                   </div>
                   <div className="flex-1 w-full max-w-md space-y-4">
                     <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/[0.05]">
