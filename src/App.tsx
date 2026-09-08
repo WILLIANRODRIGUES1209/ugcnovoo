@@ -19,7 +19,7 @@ const COUPONS = {
     vitalicioCash: "197,00",
     vitalicioLink: "https://checkout.applyfy.com.br/checkout/cmrjfn9730jr901olwnzyqr8p?offer=OO947ZE",
     discountText: "- PROMOÇÃO ATIVADA",
-    badgeText: "+ BIBLIOTECA DE PROMPTS DESBLOQUEADA",
+    badgeText: "+ BIBLIOTECA DE PROMPTS DESLOQUEADO",
   },
   "CREATOR40": {
     mensalOriginal: "245,00",
@@ -41,7 +41,7 @@ const COUPONS = {
     vitalicioCash: "197,00",
     vitalicioLink: "https://checkout.applyfy.com.br/checkout/cmrjfn9730jr901olwnzyqr8p?offer=OO947ZE",
     discountText: "- PROMOÇÃO ATIVADA",
-    badgeText: "+ BIBLIOTECA DE PROMPTS DESBLOQUEADA",
+    badgeText: "+ KIT VIRAL PREMIUM DESBLOQUEADO",
   }
 };
 
@@ -280,14 +280,6 @@ export default function App() {
                   >
                     ADQUIRIR AGORA →
                   </a>
-                  <button
-                    onClick={handleRemoveCoupon}
-                    title="Remover cupom e voltar aos valores originais"
-                    className="bg-black/30 hover:bg-black/50 text-white font-medium text-[10px] sm:text-[11px] px-2.5 py-1.5 rounded-full flex items-center gap-1 transition-all border border-white/20 shrink-0 whitespace-nowrap cursor-pointer"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                    <span className="hidden sm:inline">Remover cupom</span>
-                  </button>
                 </div>
                 <div className="flex items-center gap-1.5 text-white text-[11px] sm:text-xs font-medium tracking-tight text-center md:text-right shrink-0">
                   <span>🔥</span>
